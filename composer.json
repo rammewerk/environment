@@ -1,0 +1,30 @@
+{
+  "name": "rammewerk/environment",
+  "type": "library",
+  "description": "Simple class to manage project environment variables. Loads and caches environment variables",
+  "homepage": "https://rammewerk.com",
+  "license": "MIT",
+  "keywords": [
+    "env",
+    "dotenv",
+    "environment"
+  ],
+  "authors": [
+    {
+      "name": "Kristoffer Follestad",
+      "email": "kristoffer@rammewerk.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Rammewerk\\Component\\Environment\\": ""
+    },
+    "exclude-from-classmap": [
+      "/Tests/",
+      "/.idea"
+    ]
+  },
+  "require": {
+    "php": ">=8.2"
+  }
+}
