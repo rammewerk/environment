@@ -1,7 +1,7 @@
 Rammewerk Environment
 ======================
 
-A simple, fast and powerful environment variable handler for projects.
+A simple, fast and yet powerful environment variable handler for projects.
 
 * Parses and caches .env file
 * No other dependencies - small size.
@@ -108,20 +108,20 @@ KEY2='value'
 KEY3="value"
 
 # Values will be automatically trimmed. This is the same as KEY2='HELLO'
-KEY2=' HELLO '
+KEY4=' HELLO '
 
 # TRUE or FALSE will be converted to valid boolean type in PHP
-KEY4=TRUE
+KEY5=TRUE
 
 # An interger value will be converted to a valid PHP interger.
 # Also, if you use quotes.
-KEY5=120
+KEY6=120
 
 # Empty string '' or NULL will be converted to PHP NULL value.
-KEY6=NULL
+KEY7=NULL
 
 # Add commaseparated string inside brackets to convert to array
-KEY7='[value1,value2,value3]'
+KEY9='[value1,value2,value3]'
 ```
 
 Tips
