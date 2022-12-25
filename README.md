@@ -34,7 +34,7 @@ Support for multiple .env files
 ---------------
 You can add multiple environment files or create new variables on the fly.
 
-A file does not necessarly need to be .env. For instance, a file.txt will also work as long as it is correctly
+A file does not necessarily need to be .env. For instance, a file.txt will also work as long as it is correctly
 formatted.
 
 ```php
