@@ -1,7 +1,7 @@
 {
   "name": "rammewerk/environment",
   "type": "library",
-  "description": "Simple class to manage project environment variables. Loads and caches environment variables",
+  "description": "A simple and fast environment variable handler for PHP projects.",
   "homepage": "https://rammewerk.com",
   "license": "MIT",
   "keywords": [
