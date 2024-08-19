@@ -17,12 +17,17 @@
   ],
   "autoload": {
     "psr-4": {
-      "Rammewerk\\Component\\Environment\\": ""
+      "Rammewerk\\Component\\Environment\\": "src/"
     },
     "exclude-from-classmap": [
-      "/Tests/",
+      "/tests/",
       "/.idea"
     ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Rammewerk\\Component\\Environment\\Tests\\": "tests/"
+    }
   },
   "require": {
     "php": ">=8.2"

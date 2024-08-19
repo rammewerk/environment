@@ -1,15 +1,20 @@
 Rammewerk Environment
 ======================
 
-A simple, fast and yet powerful environment variable handler for projects.
+A simple and fast environment variable handler for projects.
 
-* Parses and caches .env file
+This package is a different approach to handle environment variables in your project:
+
+* Parses and automatically caches .env file
+* Will NOT add variables to $_ENV - as it might lead to exposing values if you are not careful with your
+  debugging.
 * No other dependencies - small size.
-* Will convert values like boolean, integer, even array (read more below)
+* Will automatically convert values to types like boolean, integer, null and even array (read more below)
 * Support closure to validate environment variables
 * Includes caching for even faster loading.
-* Does not add to variables $_ENV - which might lead to exposing values if you are not careful.
 * Support for multiple files
+
+**Important: There are some limitations to the .env file format. See below.**
 
 Getting Started
 ---------------
@@ -19,7 +24,7 @@ $ composer require rammewerk/environment
 ```
 
 ```php
-use Rammewerk\Component\Environment\Environment;
+use Rammewerk\component\environment\src\Environment;
 
 $env = new Environment();
 
@@ -41,7 +46,7 @@ formatted.
 $env->load( ROOT_DIR . '.env');
 
 # Warning: will overwrite value for keys that exist in both files.
-$env->load( ROOT_DIR . '.env.app');
+$env->load( ROOT_DIR . '.env-app');
 
 # You can also define new variables or overwrite values on the fly.
 $env->set('NEW_KEY', 'new value');
@@ -77,7 +82,7 @@ Validating environment variables
 ---------------
 
 ```php
-use \Rammewerk\Component\Environment\Validator;
+use Rammewerk\component\environment\src\Validator;
 
 ...
 
@@ -95,32 +100,51 @@ $env->validate( static function(Validator $env) {
 
 ```
 
-Limitation and automatic types
+Limitations
 ---------------
 This is a simple env parser. You will need to format your env-files accordingly:
 
-```dotenv
-# Comments are only allowed on new lines, never on the same line as variables.
+### Variable names
 
+Environment variable names must consist solely of letters, digits, and the
+underscore ( _ ) and must not begin with a digit.
+
+### Comments
+
+Comments are **only** allowed on new lines, never on the same line as variables.
+
+```dotenv
+# This is a valid comment
+USER=John # Comment like this is not allowed!
+```
+
+### Variable values
+
+Values can be quoted.
+
+```dotenv
 # Values can be quoted. These are all the same values:
 KEY1=value
 KEY2='value'
 KEY3="value"
+```
 
+### Values will be trimmed and converted to types
+
+```dotenv
 # Values will be automatically trimmed. This is the same as KEY2='HELLO'
 KEY4=' HELLO '
 
-# TRUE or FALSE will be converted to valid boolean type in PHP
+# TRUE or FALSE will be converted to valid boolean type in PHP. If you use quotes, it will be converted to string.
 KEY5=TRUE
 
-# An interger value will be converted to a valid PHP interger.
-# Also, if you use quotes.
+# An interger value will be converted to a valid PHP interger. If you use quotes, it will be converted to string.
 KEY6=120
 
 # Empty string '' or NULL will be converted to PHP NULL value.
 KEY7=NULL
 
-# Add commaseparated string inside brackets to convert to array
+# Add commaseparated string inside brackets to convert to array of strings
 KEY9='[value1,value2,value3]'
 ```
 
@@ -128,3 +152,17 @@ Tips
 ---------------
 A `new Environment()` will return a new instance of the class. So, if you use a dependency injection container or
 similar, consider making the Environment class a shared instance. Or make your own singleton wrapper.
+
+## Typed getters
+
+You can use typed getters to get the value of a key as a specific type. For example:
+
+```php
+$env->getString('KEY1'); // Returns string or null
+$env->getInt('KEY2'); // Returns int or null
+$env->getFloat('KEY3'); // Returns float or null
+$env->getBool('KEY4'); // Returns bool
+$env->getArray('KEY5'); // Returns array or null
+```
+
+If the value is not a string, int, float, bool or array, the getter will return null.
