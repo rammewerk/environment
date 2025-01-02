@@ -45,7 +45,7 @@ class Reader {
             $value = is_string( $value ) ? $this->removeQuotes( trim( $value ) ) : $value;
 
             if( is_string( $value ) && str_starts_with( $value, '[' ) && str_ends_with( $value, ']' ) ) {
-                $value = array_map( static fn($v) => trim( $v ), explode( ',', trim( $value, '[]' ) ) );
+                $value = $this->convertToArray( $value );
             }
 
             $variables[$key] = $value;
@@ -55,6 +55,20 @@ class Reader {
         return $variables;
 
     }
+
+
+
+    /**
+     * Convert environment value to array
+     *
+     * @return string[]
+     */
+    public function convertToArray(string $value): array {
+        $value = array_map( static fn($v) => trim( $v ), explode( ',', trim( $value, '[]' ) ) );
+        $value = array_filter( $value, static fn($v) => $v !== '' );
+        return array_values( $value );
+    }
+
 
 
     /**
@@ -83,6 +97,7 @@ class Reader {
     }
 
 
+
     /**
      * @param string $file
      *
@@ -96,6 +111,7 @@ class Reader {
     }
 
 
+
     /**
      * @param string $string
      *
@@ -104,6 +120,7 @@ class Reader {
     private function validKey(string $string): bool {
         return preg_match( '/^[a-zA-Z_]+\w*$/', $string ) === 1;
     }
+
 
 
     /**
@@ -119,5 +136,6 @@ class Reader {
         if( !str_ends_with( $value, '"' ) && !str_ends_with( $value, '\'' ) ) return $value;
         return substr( substr( $value, 1 ), 0, -1 );
     }
+
 
 }

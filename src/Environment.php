@@ -17,17 +17,6 @@ class Environment {
     private array $env_files = [];
 
 
-    /**
-     * Run validation
-     *
-     * @param Closure(Validator): void $callback
-     *
-     * @return void
-     */
-    public function validate(Closure $callback): void {
-        $callback( new Validator( $this->env ) );
-    }
-
 
     /**
      * Load environment file
@@ -37,9 +26,9 @@ class Environment {
      * If cache file is defined it will load from cache or create new cache.
      * Supports loading of multiple env files, but these can never share same cache.
      *
-     * @param string $file Path to environment file
+     * @param string $file            Path to environment file
      * @param string|null $cache_file Optional path to where cache file will be stored
-     * @param Closure|null $validate Optional validate closure to run before saving new cache
+     * @param Closure|null $validate  Optional validate closure to run before saving new cache
      *
      * @return static
      */
@@ -67,6 +56,7 @@ class Environment {
     }
 
 
+
     /**
      * Reload all previous environment files and build new cache.
      *
@@ -80,6 +70,20 @@ class Environment {
         }
         return $this;
     }
+
+
+
+    /**
+     * Run validation
+     *
+     * @param Closure(Validator): void $callback
+     *
+     * @return void
+     */
+    public function validate(Closure $callback): void {
+        $callback( new Validator( $this->env ) );
+    }
+
 
 
     /**
@@ -103,6 +107,7 @@ class Environment {
     }
 
 
+
     /**
      * Load environment from cache file
      *
@@ -113,11 +118,14 @@ class Environment {
     private function getCacheContent(string $file): array {
         try {
             $v = json_decode( @file_get_contents( $file ) ?: '', true, 512, JSON_THROW_ON_ERROR );
-            return is_array( $v ) ? $v : [];
+            if( !is_array( $v ) ) return [];
+            /** @var array<string, string|bool|string[]|int|null> $v */
+            return $v;
         } catch( JsonException ) {
             return [];
         }
     }
+
 
 
     /**
@@ -132,7 +140,7 @@ class Environment {
     private function loadFile(string $file, ?string $cache_file, ?Closure $validateClosure): static {
 
         # Get environment variables
-        $variables = (new Reader())->load( $file );
+        $variables = new Reader()->load( $file );
 
         # Merge to environment variables list - overwrite existing ones
         $this->env = array_merge( $this->env, $variables );
@@ -146,6 +154,7 @@ class Environment {
         return $this;
 
     }
+
 
 
     /**
@@ -175,6 +184,7 @@ class Environment {
     }
 
 
+
     /**
      * Get loaded environment variable
      *
@@ -187,6 +197,7 @@ class Environment {
     public function get(string $key): string|bool|array|int|null {
         return $this->env[$key];
     }
+
 
 
     /**
@@ -223,6 +234,7 @@ class Environment {
     }
 
 
+
     /**
      * Get loaded environment variable of type int
      * Returns null if not found or not an integer
@@ -239,6 +251,7 @@ class Environment {
     }
 
 
+
     /**
      * Get loaded environment variable of type bool
      * Returns false if not found or not a bool
@@ -253,11 +266,14 @@ class Environment {
         return filter_var( $v, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE ) ?? false;
     }
 
+
+
     /**
      * Get loaded environment variable of type array
      * Returns null if not found or not an array
      *
      * @param string $key
+     *
      * @return string[]|null
      * @noinspection PhpUnused PhpUnused
      */
