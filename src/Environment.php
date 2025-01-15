@@ -3,7 +3,6 @@
 namespace Rammewerk\Component\Environment;
 
 use Closure;
-use RuntimeException;
 
 class Environment {
 
