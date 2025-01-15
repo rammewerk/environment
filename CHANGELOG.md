@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+1.2.0
+---
+
+* Removed caching as we didn't see much benefit in speeding up loading of .env files.
+* Refactored code to be more readable and easier to maintain.
+* Updated documentation.
+
 1.1.0
 ---
 

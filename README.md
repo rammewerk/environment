@@ -1,20 +1,24 @@
 Rammewerk Environment
 ======================
 
-A simple and fast environment variable handler for projects.
+A **fast**, **typed**, and **opinionated** environment variable handler designed for simplicity.
 
-This package is a different approach to handle environment variables in your project:
+This package provides a streamlined, dependency-free approach to handling `.env` files in your project, offering both
+speed and type safety. Unlike other solutions, Rammewerk Environment focuses on performance and ensures minimal exposure
+risks by not injecting variables into $_ENV.
 
-* Parses and automatically caches .env file
-* Will NOT add variables to $_ENV - as it might lead to exposing values if you are not careful with your
-  debugging.
-* No other dependencies - small size.
-* Will automatically convert values to types like boolean, integer, null and even array (read more below)
-* Support closure to validate environment variables
-* Includes caching for even faster loading.
-* Support for multiple files
+#### Why choose Rammewerk Environment?
 
-**Important: There are some limitations to the .env file format. See below.**
+- **Blazing fast parsing** of .env files, suitable for high-performance applications.
+- **Type-safe outputs**: Automatically converts values to proper types like bool, int, null, or even array.
+- **No hidden magic**: Variables are not automatically added to global environment arrays.
+- **Dependency-free**: Minimal footprint for lightweight projects.
+- **Extensible validation**: Easily validate required variables using closures.
+- **Multiple file support**: Load and manage multiple .env files with ease.
+
+***Note**: This package supports a simplified .env format, with specific rules for variable names, comments, and values.
+See
+[Limitations](#Limitations) for details.*
 
 Getting Started
 ---------------
@@ -33,6 +37,10 @@ $env->load( ROOT_DIR . '.env');
 
 // Get value from environment
 $debug_mode = $env->get( 'DEBUG_MODE' );
+
+// Or use the built-in typed getters which returns true or false, defaults to false
+$debug_mode = $env->getBool('DEBUG_MODE'); // 
+
 ```
 
 Support for multiple .env files
@@ -52,32 +60,6 @@ $env->load( ROOT_DIR . '.env-app');
 $env->set('NEW_KEY', 'new value');
 ```
 
-Caching
----------------
-
-```php
-# You can load files from wherever you want.
-$env_file = ROOT_DIR . '/app/.env';
-
-# You decide where to put the cache.
-$cache_file = CACHE_DIR . 'env-cache.json';
-
-# Load the environment variables
-# If cache does not exist it will create one.
-# If cache exist, and is newer than the env_file, it will load from cache.
-$env->load( $env_file, $cache_file);
-
-# You can reload the file at any time.
-$env->load( $env_file, $cache_file);
-
-# But you cannot define the same cache file path for a different env file.
-# This will throw a \RuntimeException()
-$env->load( $some_other_env_file, $cache_file);
-
-# And, if you want to reload and build new cache for all previous loaded env-files, you can do so
-$env->reload();
-```
-
 Validating environment variables
 ---------------
 
@@ -85,16 +67,9 @@ Validating environment variables
 use Rammewerk\component\environment\src\Validator;
 
 ...
-
-# Validate variables when loading from file.
-# If loaded from cache - it will not run validation.
-$env->load( $env_file, $cache_file, static function( Validator $env) {
-    $env->require('DEBUG_MODE')->isBoolean();
-});
-
-# You can validate later of in you want.
-# Will validate straight away, not only on load.
+# Validate the setup of your environment variables.
 $env->validate( static function(Validator $env) {
+    $env->require('DEBUG_MODE')->isBoolean();
     $env->ifPresent('APP_URL')->endWith('/');
 })
 
