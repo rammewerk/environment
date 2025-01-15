@@ -39,7 +39,7 @@ $env->load( ROOT_DIR . '.env');
 $debug_mode = $env->get( 'DEBUG_MODE' );
 
 // Or use the built-in typed getters which returns true or false, defaults to false
-$debug_mode = $env->getBool('DEBUG_MODE'); // 
+$debug_mode = $env->getBool('DEBUG_MODE');
 
 ```
 
@@ -64,27 +64,22 @@ Validating environment variables
 ---------------
 
 ```php
-use Rammewerk\component\environment\src\Validator;
-
-...
-# Validate the setup of your environment variables.
 $env->validate( static function(Validator $env) {
     $env->require('DEBUG_MODE')->isBoolean();
     $env->ifPresent('APP_URL')->endWith('/');
 })
-
 ```
 
 Limitations
 ---------------
 This is a simple env parser. You will need to format your env-files accordingly:
 
-### Variable names
+#### Variable names
 
 Environment variable names must consist solely of letters, digits, and the
 underscore ( _ ) and must not begin with a digit.
 
-### Comments
+#### Comments
 
 Comments are **only** allowed on new lines, never on the same line as variables.
 
@@ -93,7 +88,7 @@ Comments are **only** allowed on new lines, never on the same line as variables.
 USER=John # Comment like this is not allowed!
 ```
 
-### Variable values
+#### Variable values
 
 Values can be quoted.
 
@@ -136,8 +131,16 @@ You can use typed getters to get the value of a key as a specific type. For exam
 $env->getString('KEY1'); // Returns string or null
 $env->getInt('KEY2'); // Returns int or null
 $env->getFloat('KEY3'); // Returns float or null
-$env->getBool('KEY4'); // Returns bool
+$env->getBool('KEY4'); // Returns bool, true or false, defaults to false
 $env->getArray('KEY5'); // Returns array or null
 ```
 
-If the value is not a string, int, float, bool or array, the getter will return null.
+Contribution
+---------------
+If you have any issues or would like to contribute to the development of this library, feel free to open an issue or
+pull request.
+
+License
+---------------
+The Rammewerk Container is open-sourced software licensed under
+the [MIT license](http://opensource.org/licenses/MIT).
